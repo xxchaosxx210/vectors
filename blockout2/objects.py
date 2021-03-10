@@ -24,6 +24,7 @@ class Circle:
         self.position = Vector(x, y)
         self.colour = colour
 
+
 def change_velocity(obj: object, speed: int):
     obj.speed = speed
     return (normalize(obj.velocity) * speed)

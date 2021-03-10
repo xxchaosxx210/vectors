@@ -27,6 +27,8 @@ def reset(ball: Ball):
     ball.moving = False
     ball.fallen = False
     ball.speed = BALL_DEFAULT_SPEED
+    ball.velocity = Vector(0, 0)
+    ball.position = Vector(0, 0)
 
 def draw(ball: Ball, screen: Screen):
     pygame.draw.circle(screen.surface, ball.colour, (ball.rect.x, ball.rect.y), ball.radius)
@@ -41,7 +43,7 @@ def attach_to_paddle(ball: Ball, paddle: Paddle, screen: Screen):
 
 def update(ball: Ball, paddle: Paddle, screen: Screen, dt: float):
     if ball.moving:
-            ball.position = ball.position + ball.velocity * dt
+        ball.position = ball.position + ball.velocity * dt
     else:
         attach_to_paddle(ball, paddle, screen)
     ball.rect.x = ball.position.x
@@ -78,27 +80,16 @@ def check_boundaries(ball: Ball, screen: Screen):
         screen (Screen):
     """
     threshold = 5
-    if ball.rect.left < threshold:
+    if ball.rect.left < threshold and ball.velocity.x < 0.0:
         ball.velocity.x = -ball.velocity.x
-    
     if ball.rect.right > screen.rect.width-threshold and ball.velocity.x > 0.0:
         ball.velocity.x = -ball.velocity.x
-    
-    if ball.rect.top < threshold:
+    if ball.rect.top < threshold and ball.velocity.y < 0.0:
         ball.velocity.y = -ball.velocity.y
-
     if ball.rect.top > screen.rect.height+100:
         ball.fallen = True
 
 def new_angled_velocity(ball: Ball):
-    """generate a random velocity vector in a range of 30 to 50 and 120 and 150
-
-    Args:
-        ball (Ball): Ball Object
-
-    Returns:
-        [Vector]: the new angled velocity vector
-    """
     angles = [float(x) for x in range(120, 150, 1)]
     angles.extend([float(x) for x in range(30, 50, 1)])
     angle = random.choice(angles)
@@ -107,14 +98,7 @@ def new_angled_velocity(ball: Ball):
     return normalize(Vector(x, y))
 
 def start(ball: Ball, paddle: Paddle):
-    """generate a random angle for the velocity vector and increase the velocity to the Ball moving
-
-    Args:
-        ball (Ball): Ball object
-        paddle (Paddle): Paddle Object
-    """
     direction = new_angled_velocity(ball)
     ball.velocity = ball.velocity + direction * ball.speed
     ball.moving = True
     ball.fallen = False
-

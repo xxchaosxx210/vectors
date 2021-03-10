@@ -5,7 +5,10 @@ from vector import (
     approach
 )
 
-from objects import Box
+from objects import (
+    Box,
+    change_velocity
+)
 from screen import Screen
 
 
@@ -51,8 +54,10 @@ def check_boundaries(paddle: Paddle, screen: Screen):
     if paddle.rect.x < 0:
         paddle.rect.x = 0
         paddle.position.x = paddle.rect.x
-        paddle.velocity.x = 0.5
+        paddle.velocity.x *= -1
+        paddle.velocity = change_velocity(paddle, 20)
     if paddle.rect.x > screen.rect.width-paddle.rect.width:
         paddle.rect.x = screen.rect.width-paddle.rect.width
         paddle.position.x = paddle.rect.x
-        paddle.velocity.x = 0.5
+        paddle.velocity.x *= -1
+        paddle.velocity = change_velocity(paddle, 20) 
